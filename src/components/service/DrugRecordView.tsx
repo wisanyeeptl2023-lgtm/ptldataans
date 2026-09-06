@@ -86,7 +86,7 @@ export const DrugRecordView: React.FC = () => {
     e.preventDefault();
 
     if (!selectedOperation || !hnInput.trim()) {
-      showErrorAlert('ข้อมูลไม่ครบถ้วน', 'กรุณาค้นหาและเลือกรายการผู้ป่วย/หัตถการจาก tblOperation');
+      showErrorAlert('ข้อมูลไม่ครบถ้วน', 'กรุณาค้นหาและเลือกรายการผู้ป่วย/หัตถการ');
       return;
     }
 
@@ -178,7 +178,7 @@ export const DrugRecordView: React.FC = () => {
             <span className="w-2 h-6 bg-emerald-400 rounded-full shrink-0"></span>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                บันทึกยา (tblDrugServ)
+                บันทึกยา
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 บันทึกรายการยาที่ใช้ในการบริการวิสัญญี (HN ยังคงแสดงอยู่หลังบันทึก)
@@ -232,10 +232,10 @@ export const DrugRecordView: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* ค้นหา HN จาก tblOperation */}
+          {/* ค้นหา HN */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              ค้นหาข้อมูลจาก sheets tblOperation column hn (text box ค้นหาได้) <span className="text-red-500">*</span>
+              ค้นหาและเลือก HN / หัตถการ <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -245,7 +245,7 @@ export const DrugRecordView: React.FC = () => {
                   id="search-drug-hn-box"
                   value={hnSearchQuery}
                   onChange={e => setHnSearchQuery(e.target.value)}
-                  placeholder="พิมพ์ค้นหา HN จาก tblOperation..."
+                  placeholder="พิมพ์ค้นหา HN..."
                   className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
                 />
               </div>
@@ -270,45 +270,45 @@ export const DrugRecordView: React.FC = () => {
             </div>
             {operations.length === 0 && (
               <p className="text-[11px] text-amber-600 mt-1">
-                * ยังไม่มีข้อมูลใน tblOperation กรุณาบันทึกข้อมูลที่เมนู "บันทึก Complication" ก่อน
+                * ยังไม่มีข้อมูลหัตถการ กรุณาบันทึกข้อมูลที่เมนู "บันทึก Complication" ก่อน
               </p>
             )}
           </div>
 
-          {/* idoper (ดึงข้อมูลจาก sheets tblOperation column idoper) */}
+          {/* idoper */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              รหัส idoper (จาก tblOperation)
+              รหัส idoper
             </label>
             <input
               type="text"
               id="tbldrug-idoper-read"
               value={selectedOperation ? selectedOperation.idoper : ''}
               readOnly
-              placeholder="ดึงจาก tblOperation อัตโนมัติ"
+              placeholder="ดึงข้อมูลอัตโนมัติ"
               className="w-full px-3 py-2 text-xs bg-slate-100/80 border border-slate-200 rounded-xl text-slate-600 cursor-not-allowed font-mono text-[11px]"
             />
           </div>
 
-          {/* riskroom (ดึงข้อมูลจาก sheets tblOperation column riskroom) */}
+          {/* riskroom */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              ห้อง (riskroom จาก tblOperation)
+              ห้อง (riskroom)
             </label>
             <input
               type="text"
               id="tbldrug-riskroom-read"
               value={selectedOperation ? selectedOperation.riskroom : ''}
               readOnly
-              placeholder="ดึงจาก tblOperation อัตโนมัติ"
+              placeholder="ดึงข้อมูลอัตโนมัติ"
               className="w-full px-3 py-2 text-xs bg-slate-100/80 border border-slate-200 rounded-xl text-slate-700 font-medium"
             />
           </div>
 
-          {/* drugname (ดึงข้อมูลจาก sheets tbldrug column drugname ค้นหาได้) */}
+          {/* drugname */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              ชื่อยา (เลือกจาก tbldrug) <span className="text-red-500">*</span>
+              ชื่อยา <span className="text-red-500">*</span>
             </label>
             <select
               id="tbldrug-name-select"

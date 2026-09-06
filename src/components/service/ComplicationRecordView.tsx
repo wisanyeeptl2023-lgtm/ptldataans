@@ -179,7 +179,7 @@ export const ComplicationRecordView: React.FC = () => {
             <span className="w-2 h-6 bg-emerald-400 rounded-full shrink-0"></span>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                บันทึก Complication (tblOperation)
+                บันทึก Complication
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 บันทึกภาวะแทรกซ้อนที่เกิดขึ้นในห้องผ่าตัดหรือห้องพักฟื้น (HN ยังคงแสดงอยู่หลังบันทึก)
@@ -233,10 +233,10 @@ export const ComplicationRecordView: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* ค้นหาและเลือก HN จาก tblPateint */}
+          {/* ค้นหาและเลือก HN จากทะเบียนผู้ป่วย */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              ค้นหาและเลือก HN จากทะเบียนผู้ป่วย (tblPateint) <span className="text-red-500">*</span>
+              ค้นหาและเลือก HN จากทะเบียนผู้ป่วย <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -302,7 +302,7 @@ export const ComplicationRecordView: React.FC = () => {
           {/* Complication (ดึงจาก sheets tblcom ให้ค้นหาได้) */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Complication (เลือกจาก tblcom) <span className="text-red-500">*</span>
+              Complication <span className="text-red-500">*</span>
             </label>
             <select
               id="tbloper-complication-select"

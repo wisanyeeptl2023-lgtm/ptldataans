@@ -59,29 +59,29 @@ export default function App() {
   const getActiveMenuTitle = (tab: ActiveTab): string => {
     switch (tab) {
       case 'service_patient':
-        return 'ทะเบียนผู้ป่วย (tblPateint)';
+        return 'ทะเบียนผู้ป่วย';
       case 'service_disease':
-        return 'บันทึกโรคประจำตัว (tbldis)';
+        return 'บันทึกโรคประจำตัว';
       case 'service_complication':
-        return 'บันทึก Complication (tblOperation)';
+        return 'บันทึก Complication';
       case 'service_drug':
-        return 'บันทึกยา (tblDrugServ)';
+        return 'บันทึกยา';
       case 'master_disease':
-        return 'ข้อมูลโรค (tbldisname)';
+        return 'ข้อมูลโรคประจำตัว';
       case 'master_complication':
-        return 'ข้อมูล Complication (tblcom)';
+        return 'ข้อมูล Complication';
       case 'master_drug':
-        return 'ข้อมูลยา (tbldrug)';
+        return 'ข้อมูลยา';
       case 'master_users':
-        return 'เมนูผู้ใช้งาน (tbllogin)';
+        return 'เมนูผู้ใช้งาน';
       case 'dashboard_patient':
-        return 'รายงานผู้ป่วย (tblPateint)';
+        return 'รายงานผู้ป่วย';
       case 'dashboard_disease':
-        return 'รายงานโรคประจำตัว (tblDis)';
+        return 'รายงานโรคประจำตัว';
       case 'dashboard_complication':
         return 'รายงาน Complication';
       case 'dashboard_drug':
-        return 'รายงานยา (tblDrugServ)';
+        return 'รายงานยา';
       default:
         return 'ระบบงานวิสัญญี';
     }

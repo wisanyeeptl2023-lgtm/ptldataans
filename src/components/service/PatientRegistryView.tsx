@@ -212,7 +212,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
             <span className="w-2 h-6 bg-emerald-400 rounded-full shrink-0"></span>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                ทะเบียนผู้ป่วย งานวิสัญญี (tblPateint)
+                ทะเบียนผู้ป่วย
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 บันทึก เพิ่ม ลบ แก้ไข ข้อมูลผู้ป่วยและหัตถการวิสัญญี โรงพยาบาลพัทลุง
@@ -272,7 +272,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {/* HN */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 HN <span className="text-red-500">*</span>
               </label>
               <input
@@ -288,7 +288,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* วันที่ทำหัตถการ operdate */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 วันที่ทำหัตถการ (พ.ศ.) <span className="text-red-500">*</span>
               </label>
               <BEDatePicker
@@ -301,7 +301,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ครั้งที่ no */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ครั้งที่ <span className="text-red-500">*</span>
               </label>
               <input
@@ -317,7 +317,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ใบที่ nocase */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ใบที่ <span className="text-red-500">*</span>
               </label>
               <input
@@ -333,7 +333,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* เพศ sex */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 เพศ <span className="text-red-500">*</span>
               </label>
               <select
@@ -349,7 +349,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* อายุ age */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 อายุ (ปี) <span className="text-red-500">*</span>
               </label>
               <input
@@ -367,7 +367,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ASA */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ASA Class <span className="text-red-500">*</span>
               </label>
               <select
@@ -386,7 +386,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* แผนก pct */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 แผนก (pct) <span className="text-red-500">*</span>
               </label>
               <select
@@ -405,7 +405,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* วิธีระงับความรู้สึก tegnic */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 วิธีระงับความรู้สึก <span className="text-red-500">*</span>
               </label>
               <select
@@ -424,7 +424,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* Airway */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Airway <span className="text-red-500">*</span>
               </label>
               <select
@@ -443,7 +443,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ระยะเวลาผ่าตัด TimeOR */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ระยะเวลาผ่าตัด (นาที) <span className="text-red-500">*</span>
               </label>
               <input
@@ -454,20 +454,20 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
                 placeholder="เช่น 60"
                 min="0"
                 required
-                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               />
             </div>
 
             {/* ประเภท CaseCode */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ประเภท (CaseCode)
               </label>
               <select
                 id="form-pat-casecode"
                 value={caseCode}
                 onChange={e => setCaseCode(e.target.value as PatientRecord['CaseCode'])}
-                className="w-full px-3 py-2 text-sm bg-white border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               >
                 {CASE_CODE_OPTIONS.map(opt => (
                   <option key={opt} value={opt}>
@@ -479,7 +479,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* อุณหภูมิร่างกาย disect */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 อุณหภูมิร่างกาย (°C) <span className="text-red-500">*</span>
               </label>
               <input
@@ -489,20 +489,20 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
                 onChange={e => setDisect(e.target.value)}
                 placeholder="เช่น 36.5"
                 required
-                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               />
             </div>
 
             {/* PainIn */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Pain In (0-10) <span className="text-red-500">*</span>
               </label>
               <select
                 id="form-pat-painin"
                 value={painIn}
                 onChange={e => setPainIn(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               >
                 {PAIN_OPTIONS.map(opt => (
                   <option key={opt} value={opt}>
@@ -514,14 +514,14 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* PainOut */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 Pain Out (0-10) <span className="text-red-500">*</span>
               </label>
               <select
                 id="form-pat-painout"
                 value={painOut}
                 onChange={e => setPainOut(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               >
                 {PAIN_OPTIONS.map(opt => (
                   <option key={opt} value={opt}>
@@ -533,7 +533,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ระยะเวลาในห้องพักฟื้น TimePACU */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ระยะเวลาในห้องพักฟื้น (นาที) <span className="text-red-500">*</span>
               </label>
               <input
@@ -544,20 +544,20 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
                 placeholder="เช่น 45"
                 min="0"
                 required
-                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               />
             </div>
 
             {/* เยี่ยมหลังผ่าตัด postopvisit */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 เยี่ยมหลังผ่าตัด <span className="text-red-500">*</span>
               </label>
               <select
                 id="form-pat-postop"
                 value={postopvisit}
                 onChange={e => setPostopvisit(e.target.value as 'yes' | 'no')}
-                className="w-full px-3 py-2 text-sm bg-white border border-emerald-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+                className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               >
                 <option value="no">no (ยังไม่ได้เยี่ยม)</option>
                 <option value="yes">yes (เยี่ยมแล้ว)</option>
@@ -566,7 +566,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ชื่อพยาบาลดมยา AN (ค้นหา/เลือกจาก tbllogin) */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                 ชื่อพยาบาลดมยา (AN) <span className="text-red-500">*</span>
               </label>
               <select
@@ -585,32 +585,6 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
 
             {/* ชื่อผู้บันทึกข้อมูล chknote (ซ่อน นำมาจาก tbllogin ของผู้ใช้) */}
             <input type="hidden" name="chknote" value={currentUser.AN} />
-          </div>
-
-          {/* Hidden/Optional Disease Note Collapsible */}
-          <div className="pt-2">
-            <button
-              type="button"
-              id="toggle-optional-fields-btn"
-              onClick={() => setOptionalDiseasesOpen(!optionalDiseasesOpen)}
-              className="text-xs text-emerald-700 hover:text-emerald-900 font-semibold flex items-center gap-1.5"
-            >
-              <span>{optionalDiseasesOpen ? '▼ ซ่อนฟิลด์โรคประจำตัวเพิ่มเติม' : '▶ แสดงฟิลด์โรคประจำตัวเพิ่มเติม (บันทึกย่อ)'}</span>
-            </button>
-            {optionalDiseasesOpen && (
-              <div className="mt-2 p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  บันทึกโรคประจำตัวเพิ่มเติม (เช่น DM, HT, Asthma ฯลฯ)
-                </label>
-                <input
-                  type="text"
-                  value={chronicNote}
-                  onChange={e => setChronicNote(e.target.value)}
-                  placeholder="ระบุโรคประจำตัวย่อ (หรือสามารถบันทึกละเอียดที่เมนู บันทึกโรคประจำตัว tbldis)"
-                  className="w-full px-3 py-2 text-sm bg-white border border-emerald-100 rounded-xl text-slate-700"
-                />
-              </div>
-            )}
           </div>
 
           {/* Form Actions */}

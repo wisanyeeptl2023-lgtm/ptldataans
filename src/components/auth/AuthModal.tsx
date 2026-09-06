@@ -190,11 +190,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onLoginSuccess }) => {
                 </div>
               </div>
 
-              <div className="p-3 bg-emerald-50/70 rounded-2xl border border-emerald-100 text-xs text-emerald-800 flex items-start gap-2">
-                <span className="font-bold text-emerald-700">คำแนะนำ:</span>
-                <span>ผู้ใช้เริ่มต้น: username <b>adisorn</b> / password <b>251108</b> (นายอดิศร ชุมคช)</span>
-              </div>
-
               <button
                 type="submit"
                 id="submit-login-btn"

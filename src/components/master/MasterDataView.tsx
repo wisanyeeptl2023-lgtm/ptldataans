@@ -29,25 +29,25 @@ export const MasterDataView: React.FC<MasterDataViewProps> = ({ type }) => {
 
   const config = {
     disease: {
-      title: 'ข้อมูลโรค (tbldisname)',
-      desc: 'เพิ่ม ลบ แก้ไข รายชื่อโรคประจำตัว (คอลัมน์ dis)',
-      label: 'ชื่อโรคประจำตัว (dis)',
+      title: 'ข้อมูลโรคประจำตัว',
+      desc: 'เพิ่ม ลบ แก้ไข รายชื่อโรคประจำตัว',
+      label: 'ชื่อโรคประจำตัว',
       placeholder: 'เช่น เบาหวาน (DM), ความดันโลหิตสูง (HT)',
       icon: BookOpen,
       iconColor: 'bg-rose-100 text-rose-700'
     },
     complication: {
-      title: 'ข้อมูล Complication (tblcom)',
-      desc: 'เพิ่ม ลบ แก้ไข รายชื่อภาวะแทรกซ้อน (คอลัมน์ Complication)',
-      label: 'ชื่อภาวะแทรกซ้อน (Complication)',
+      title: 'ข้อมูล Complication',
+      desc: 'เพิ่ม ลบ แก้ไข รายชื่อภาวะแทรกซ้อน',
+      label: 'ชื่อภาวะแทรกซ้อน',
       placeholder: 'เช่น Difficult intubation, Hypotension',
       icon: Layers,
       iconColor: 'bg-amber-100 text-amber-700'
     },
     drug: {
-      title: 'ข้อมูลยา (tbldrug)',
-      desc: 'เพิ่ม ลบ แก้ไข รายชื่อยาทางวิสัญญี (คอลัมน์ drugname)',
-      label: 'ชื่อยา (drugname)',
+      title: 'ข้อมูลยา',
+      desc: 'เพิ่ม ลบ แก้ไข รายชื่อยาทางวิสัญญี',
+      label: 'ชื่อยา',
       placeholder: 'เช่น Propofol, Fentanyl, Morphine',
       icon: Pill,
       iconColor: 'bg-teal-100 text-teal-700'

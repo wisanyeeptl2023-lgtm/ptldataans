@@ -130,10 +130,10 @@ export const ComplicationDashboard: React.FC = () => {
           <span className="w-2 h-6 bg-emerald-400 rounded-full shrink-0"></span>
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-              รายงาน Complication (tblOperation)
+              รายงาน Complication
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              วิเคราะห์ภาวะแทรกซ้อนเชื่อมโยงทะเบียนผู้ป่วย (joint tblPateint ด้วย idpat)
+              วิเคราะห์ภาวะแทรกซ้อนเชื่อมโยงทะเบียนผู้ป่วย
             </p>
           </div>
         </div>
@@ -142,7 +142,7 @@ export const ComplicationDashboard: React.FC = () => {
           <div className="flex items-center gap-2 bg-emerald-50/60 p-1.5 px-3 rounded-2xl border border-emerald-100">
             <span className="text-xs font-semibold text-emerald-900 flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-              ช่วงเวลา operdate (พ.ศ.):
+              ช่วงวันที่ทำหัตถการ (พ.ศ.):
             </span>
             <div className="w-36">
               <BEDatePicker

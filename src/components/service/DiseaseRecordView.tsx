@@ -181,7 +181,7 @@ export const DiseaseRecordView: React.FC = () => {
             <span className="w-2 h-6 bg-emerald-400 rounded-full shrink-0"></span>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                บันทึกโรคประจำตัว (tbldis)
+                บันทึกโรคประจำตัว
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 บันทึกโรคประจำตัวผู้ป่วย (HN ยังคงแสดงอยู่หลังบันทึก เพื่อให้เลือกโรคอื่นต่อได้สะดวก)
@@ -235,10 +235,10 @@ export const DiseaseRecordView: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Step 1: ค้นหา HN จาก tblPateint */}
+          {/* Step 1: ค้นหา HN จากทะเบียนผู้ป่วย */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              ค้นหาและเลือก HN จากทะเบียนผู้ป่วย (tblPateint) <span className="text-red-500">*</span>
+              ค้นหาและเลือก HN จากทะเบียนผู้ป่วย <span className="text-red-500">*</span>
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
@@ -308,7 +308,7 @@ export const DiseaseRecordView: React.FC = () => {
           {/* dis (ดึงจาก tbldisname column dis ค้นหา/เลือกได้) */}
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              โรคประจำตัว (เลือกจาก tbldisname) <span className="text-red-500">*</span>
+              โรคประจำตัว <span className="text-red-500">*</span>
             </label>
             <select
               id="tbldis-dis-select"

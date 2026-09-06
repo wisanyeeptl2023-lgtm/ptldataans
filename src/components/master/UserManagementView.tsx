@@ -179,7 +179,7 @@ export const UserManagementView: React.FC = () => {
         <div className="w-14 h-14 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-100">
           <KeyRound className="w-7 h-7 text-emerald-600" />
         </div>
-        <h3 className="text-lg font-bold text-slate-800">เข้าสู่เมนูผู้ใช้งาน (tbllogin)</h3>
+        <h3 className="text-lg font-bold text-slate-800">เข้าสู่เมนูผู้ใช้งาน</h3>
         <p className="text-xs text-slate-500 mt-1 mb-6">
           เมนูนี้ได้รับการคุ้มครอง กรุณากรอกรหัสผ่านผู้ดูแลระบบ (รหัสผ่าน: <code className="font-mono font-bold text-emerald-700">ptlans</code>)
         </p>
@@ -229,7 +229,7 @@ export const UserManagementView: React.FC = () => {
             <span className="w-2 h-6 bg-emerald-400 rounded-full shrink-0"></span>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-slate-800">
-                เมนูผู้ใช้งาน (tbllogin)
+                เมนูผู้ใช้งาน
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 จัดการรายชื่อผู้ใช้งานและอนุมัติสิทธิ์การเข้าใช้ระบบ (status: y=อนุญาต, n=ไม่อนุญาต)
@@ -363,7 +363,7 @@ export const UserManagementView: React.FC = () => {
         <div className="p-4 sm:p-5 bg-white border-b border-slate-100 flex items-center justify-between">
           <div className="font-semibold text-xs text-slate-700 flex items-center gap-2">
             <span className="w-2 h-4 bg-emerald-400 rounded-full shrink-0"></span>
-            <span>รายชื่อผู้ใช้ทั้งหมดใน tbllogin ({users.length} คน)</span>
+            <span>รายชื่อผู้ใช้ทั้งหมด ({users.length} คน)</span>
           </div>
         </div>
 

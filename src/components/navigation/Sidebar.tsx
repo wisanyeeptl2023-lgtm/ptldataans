@@ -55,26 +55,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         {
           id: 'service_patient' as ActiveTab,
-          label: 'ทะเบียนผู้ป่วย (tblPateint)',
+          label: 'ทะเบียนผู้ป่วย',
           desc: 'เพิ่ม ลบ แก้ไข ข้อมูลผู้ป่วยและหัตถการ',
           icon: Users,
           badge: 'หลัก'
         },
         {
           id: 'service_disease' as ActiveTab,
-          label: 'บันทึกโรคประจำตัว (tbldis)',
+          label: 'บันทึกโรคประจำตัว',
           desc: 'บันทึกโรคประจำตัวตาม HN ผู้ป่วย',
           icon: HeartPulse
         },
         {
           id: 'service_complication' as ActiveTab,
-          label: 'บันทึก Complication (tblOperation)',
+          label: 'บันทึก Complication',
           desc: 'บันทึกภาวะแทรกซ้อนและห้องที่เกิด',
           icon: AlertTriangle
         },
         {
           id: 'service_drug' as ActiveTab,
-          label: 'บันทึกยา (tblDrugServ)',
+          label: 'บันทึกยา',
           desc: 'บันทึกรายการยาที่ใช้ในวิสัญญี',
           icon: Pill
         }
@@ -85,25 +85,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         {
           id: 'master_disease' as ActiveTab,
-          label: 'ข้อมูลโรค (tbldisname)',
+          label: 'ข้อมูลโรคประจำตัว',
           desc: 'จัดการรายชื่อโรคประจำตัว',
           icon: BookOpen
         },
         {
           id: 'master_complication' as ActiveTab,
-          label: 'ข้อมูล Complication (tblcom)',
+          label: 'ข้อมูล Complication',
           desc: 'จัดการรายชื่อภาวะแทรกซ้อน',
           icon: Layers
         },
         {
           id: 'master_drug' as ActiveTab,
-          label: 'ข้อมูลยา (tbldrug)',
+          label: 'ข้อมูลยา',
           desc: 'จัดการรายชื่อยาทางวิสัญญี',
           icon: Pill
         },
         {
           id: 'master_users' as ActiveTab,
-          label: 'เมนูผู้ใช้งาน (tbllogin)',
+          label: 'เมนูผู้ใช้งาน',
           desc: 'จัดการสิทธิ์ผู้ใช้ (รหัสผ่าน: ptlans)',
           icon: Shield,
           badge: 'PIN'
@@ -115,13 +115,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       items: [
         {
           id: 'dashboard_patient' as ActiveTab,
-          label: 'รายงานผู้ป่วย (tblPateint)',
+          label: 'รายงานผู้ป่วย',
           desc: 'สถิติเพศ, ASA, เทคนิค, ค่าเฉลี่ยเวลา',
           icon: PieChart
         },
         {
           id: 'dashboard_disease' as ActiveTab,
-          label: 'รายงานโรคประจำตัว (tblDis)',
+          label: 'รายงานโรคประจำตัว',
           desc: 'สรุปจำนวนนับและร้อยละโรค',
           icon: Activity
         },
@@ -133,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         },
         {
           id: 'dashboard_drug' as ActiveTab,
-          label: 'รายงานยา (tblDrugServ)',
+          label: 'รายงานยา',
           desc: 'สรุปการใช้ยาและห้องบริการ',
           icon: PieChart
         }
