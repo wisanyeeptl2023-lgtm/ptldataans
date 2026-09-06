@@ -1,0 +1,6 @@
+{
+  "name": "ทะเบียนผู้ป่วย งานวิสัญญี โรงพยาบาลพัทลุง",
+  "description": "ระบบทะเบียนผู้ป่วย งานวิสัญญี โรงพยาบาลพัทลุง บันทึกข้อมูลบริการ โรคประจำตัว ภาวะแทรกซ้อน การใช้ยา และรายงานแดชบอร์ดสถิติ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
