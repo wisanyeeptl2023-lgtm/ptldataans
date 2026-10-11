@@ -21,11 +21,13 @@ import { ComplicationDashboard } from './components/dashboard/ComplicationDashbo
 import { DrugDashboard } from './components/dashboard/DrugDashboard';
 
 import { showSuccessAlert, showConfirmDialog } from './utils/sweetalert';
+import { SupabaseSchemaModal } from './components/common/SupabaseSchemaModal';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<UserLogin | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('service_patient');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isSchemaModalOpen, setIsSchemaModalOpen] = useState<boolean>(false);
 
   // Load authenticated user on mount
   useEffect(() => {
@@ -98,6 +100,13 @@ export default function App() {
         onToggleMenu={() => setIsSidebarOpen(prev => !prev)}
         onLogout={handleLogout}
         activeMenuTitle={getActiveMenuTitle(activeTab)}
+        onOpenSchema={() => setIsSchemaModalOpen(true)}
+      />
+
+      {/* Supabase Schema Modal */}
+      <SupabaseSchemaModal
+        isOpen={isSchemaModalOpen}
+        onClose={() => setIsSchemaModalOpen(false)}
       />
 
       {/* Hamburger Drawer Sidebar (Mobile & Desktop) */}
@@ -142,7 +151,7 @@ export default function App() {
         <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center sm:justify-start">
           <span className="inline-flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            DB: Connected (Firebase)
+            DB: Connected (Supabase PostgreSQL)
           </span>
           <span className="text-emerald-600">|</span>
           <span>

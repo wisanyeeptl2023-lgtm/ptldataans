@@ -1,14 +1,4 @@
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  orderBy
-} from 'firebase/firestore';
-import { db } from '../firebase';
+import { supabase } from '../supabase';
 import {
   UserLogin,
   PatientRecord,
@@ -20,7 +10,7 @@ import {
   MasterDrug
 } from '../types';
 
-// Initial seeds
+// Initial seeds fallback
 const INITIAL_USERS: UserLogin[] = [
   {
     username: 'adisorn',
@@ -84,7 +74,7 @@ const INITIAL_DRUGS: string[] = [
   'Paracetamol IV'
 ];
 
-// Helper for local storage backup to ensure instant responsiveness
+// Helper for local storage backup to ensure instant responsiveness & offline safety
 const getLocal = <T>(key: string, fallback: T[]): T[] => {
   try {
     const raw = localStorage.getItem(`ptl_${key}`);
@@ -102,65 +92,57 @@ const setLocal = <T>(key: string, data: T[]) => {
   }
 };
 
-// Seed initial system data
+// Seed initial system data into Supabase if empty
 export const seedInitialDataIfEmpty = async () => {
   try {
     // Check users
-    const usersCol = collection(db, 'tbllogin');
-    const userSnap = await getDocs(usersCol);
-    if (userSnap.empty) {
+    const { data: users, error: userErr } = await supabase.from('tbllogin').select('id').limit(1);
+    if (!userErr && (!users || users.length === 0)) {
       for (const u of INITIAL_USERS) {
-        await addDoc(usersCol, u);
+        await supabase.from('tbllogin').insert([u]);
       }
     }
 
     // Check diseases
-    const disCol = collection(db, 'tbldisname');
-    const disSnap = await getDocs(disCol);
-    if (disSnap.empty) {
-      for (const d of INITIAL_DISEASES) {
-        await addDoc(disCol, { dis: d });
-      }
+    const { data: diseases, error: disErr } = await supabase.from('tbldisname').select('id').limit(1);
+    if (!disErr && (!diseases || diseases.length === 0)) {
+      await supabase.from('tbldisname').insert(INITIAL_DISEASES.map(d => ({ dis: d })));
     }
 
     // Check complications
-    const comCol = collection(db, 'tblcom');
-    const comSnap = await getDocs(comCol);
-    if (comSnap.empty) {
-      for (const c of INITIAL_COMPLICATIONS) {
-        await addDoc(comCol, { Complication: c });
-      }
+    const { data: coms, error: comErr } = await supabase.from('tblcom').select('id').limit(1);
+    if (!comErr && (!coms || coms.length === 0)) {
+      await supabase.from('tblcom').insert(INITIAL_COMPLICATIONS.map(c => ({ Complication: c })));
     }
 
     // Check drugs
-    const drugCol = collection(db, 'tbldrug');
-    const drugSnap = await getDocs(drugCol);
-    if (drugSnap.empty) {
-      for (const dr of INITIAL_DRUGS) {
-        await addDoc(drugCol, { drugname: dr });
-      }
+    const { data: drugs, error: drugErr } = await supabase.from('tbldrug').select('id').limit(1);
+    if (!drugErr && (!drugs || drugs.length === 0)) {
+      await supabase.from('tbldrug').insert(INITIAL_DRUGS.map(dr => ({ drugname: dr })));
     }
   } catch (error) {
-    console.warn('Firebase initial seeding notice:', error);
+    console.warn('Supabase initial seeding notice:', error);
   }
 };
 
 // ==================== tbllogin (Users) ====================
 export const getUsers = async (): Promise<UserLogin[]> => {
   try {
-    const col = collection(db, 'tbllogin');
-    const snap = await getDocs(col);
-    if (snap.empty) {
-      return getLocal('tbllogin', INITIAL_USERS);
+    const { data, error } = await supabase
+      .from('tbllogin')
+      .select('*')
+      .order('createdAt', { ascending: true });
+
+    if (!error && data && data.length > 0) {
+      setLocal('tbllogin', data);
+      return data as UserLogin[];
     }
-    const items: UserLogin[] = [];
-    snap.forEach(d => {
-      items.push({ id: d.id, ...(d.data() as UserLogin) });
-    });
-    setLocal('tbllogin', items);
-    return items;
+    if (error) {
+      console.warn('Supabase getUsers error:', error.message);
+    }
+    return getLocal('tbllogin', INITIAL_USERS);
   } catch (error) {
-    console.warn('Firestore fallback getUsers:', error);
+    console.warn('Supabase fallback getUsers:', error);
     return getLocal('tbllogin', INITIAL_USERS);
   }
 };
@@ -172,25 +154,42 @@ export const registerUser = async (user: Omit<UserLogin, 'id'>): Promise<string>
     createdAt: new Date().toISOString()
   };
   try {
-    const docRef = await addDoc(collection(db, 'tbllogin'), newUser);
-    const users = await getUsers();
-    setLocal('tbllogin', [...users, { id: docRef.id, ...newUser }]);
-    return docRef.id;
+    const { data, error } = await supabase
+      .from('tbllogin')
+      .insert([newUser])
+      .select('id')
+      .single();
+
+    if (!error && data?.id) {
+      const users = await getUsers();
+      setLocal('tbllogin', [...users, { id: data.id, ...newUser }]);
+      return data.id;
+    }
+    if (error) {
+      console.warn('Supabase registerUser error:', error.message);
+    }
   } catch (error) {
-    console.warn('Firestore fallback registerUser:', error);
-    const localId = `user_${Date.now()}`;
-    const users = getLocal<UserLogin>('tbllogin', INITIAL_USERS);
-    setLocal('tbllogin', [...users, { id: localId, ...newUser }]);
-    return localId;
+    console.warn('Supabase fallback registerUser:', error);
   }
+
+  const localId = `user_${Date.now()}`;
+  const users = getLocal<UserLogin>('tbllogin', INITIAL_USERS);
+  setLocal('tbllogin', [...users, { id: localId, ...newUser }]);
+  return localId;
 };
 
 export const updateUser = async (id: string, updates: Partial<UserLogin>): Promise<void> => {
   try {
-    const docRef = doc(db, 'tbllogin', id);
-    await updateDoc(docRef, updates);
+    const { error } = await supabase
+      .from('tbllogin')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Supabase updateUser error:', error.message);
+    }
   } catch (error) {
-    console.warn('Firestore fallback updateUser:', error);
+    console.warn('Supabase fallback updateUser:', error);
   }
   const users = getLocal<UserLogin>('tbllogin', INITIAL_USERS);
   setLocal('tbllogin', users.map(u => u.id === id ? { ...u, ...updates } : u));
@@ -198,9 +197,16 @@ export const updateUser = async (id: string, updates: Partial<UserLogin>): Promi
 
 export const deleteUser = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tbllogin', id));
+    const { error } = await supabase
+      .from('tbllogin')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Supabase deleteUser error:', error.message);
+    }
   } catch (error) {
-    console.warn('Firestore fallback deleteUser:', error);
+    console.warn('Supabase fallback deleteUser:', error);
   }
   const users = getLocal<UserLogin>('tbllogin', INITIAL_USERS);
   setLocal('tbllogin', users.filter(u => u.id !== id));
@@ -209,27 +215,22 @@ export const deleteUser = async (id: string): Promise<void> => {
 // ==================== tblPateint (Patient Registry) ====================
 export const getPatients = async (): Promise<PatientRecord[]> => {
   try {
-    const col = collection(db, 'tblPateint');
-    const q = query(col, orderBy('createdAt', 'desc'));
-    const snap = await getDocs(q);
-    const items: PatientRecord[] = [];
-    snap.forEach(d => {
-      items.push({ id: d.id, ...(d.data() as PatientRecord) });
-    });
-    setLocal('tblPateint', items);
-    return items;
-  } catch (error) {
-    try {
-      const snap = await getDocs(collection(db, 'tblPateint'));
-      const items: PatientRecord[] = [];
-      snap.forEach(d => {
-        items.push({ id: d.id, ...(d.data() as PatientRecord) });
-      });
-      setLocal('tblPateint', items);
-      return items;
-    } catch {
-      return getLocal('tblPateint', []);
+    const { data, error } = await supabase
+      .from('tblPateint')
+      .select('*')
+      .order('createdAt', { ascending: false });
+
+    if (!error && data) {
+      setLocal('tblPateint', data);
+      return data as PatientRecord[];
     }
+    if (error) {
+      console.warn('Supabase getPatients error:', error.message);
+    }
+    return getLocal('tblPateint', []);
+  } catch (error) {
+    console.warn('Supabase fallback getPatients:', error);
+    return getLocal('tblPateint', []);
   }
 };
 
@@ -239,25 +240,42 @@ export const addPatient = async (patient: Omit<PatientRecord, 'id'>): Promise<st
     createdAt: new Date().toISOString()
   };
   try {
-    const docRef = await addDoc(collection(db, 'tblPateint'), newRecord);
-    const records = await getPatients();
-    setLocal('tblPateint', [{ id: docRef.id, ...newRecord }, ...records]);
-    return docRef.id;
+    const { data, error } = await supabase
+      .from('tblPateint')
+      .insert([newRecord])
+      .select('id')
+      .single();
+
+    if (!error && data?.id) {
+      const records = await getPatients();
+      setLocal('tblPateint', [{ id: data.id, ...newRecord }, ...records]);
+      return data.id;
+    }
+    if (error) {
+      console.warn('Supabase addPatient error:', error.message);
+    }
   } catch (error) {
-    console.warn('Firestore fallback addPatient:', error);
-    const localId = `pat_${Date.now()}`;
-    const records = getLocal<PatientRecord>('tblPateint', []);
-    setLocal('tblPateint', [{ id: localId, ...newRecord }, ...records]);
-    return localId;
+    console.warn('Supabase fallback addPatient:', error);
   }
+
+  const localId = `pat_${Date.now()}`;
+  const records = getLocal<PatientRecord>('tblPateint', []);
+  setLocal('tblPateint', [{ id: localId, ...newRecord }, ...records]);
+  return localId;
 };
 
 export const updatePatient = async (id: string, updates: Partial<PatientRecord>): Promise<void> => {
   try {
-    const docRef = doc(db, 'tblPateint', id);
-    await updateDoc(docRef, updates);
+    const { error } = await supabase
+      .from('tblPateint')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Supabase updatePatient error:', error.message);
+    }
   } catch (error) {
-    console.warn('Firestore fallback updatePatient:', error);
+    console.warn('Supabase fallback updatePatient:', error);
   }
   const records = getLocal<PatientRecord>('tblPateint', []);
   setLocal('tblPateint', records.map(r => r.id === id ? { ...r, ...updates } : r));
@@ -265,9 +283,16 @@ export const updatePatient = async (id: string, updates: Partial<PatientRecord>)
 
 export const deletePatient = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tblPateint', id));
+    const { error } = await supabase
+      .from('tblPateint')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Supabase deletePatient error:', error.message);
+    }
   } catch (error) {
-    console.warn('Firestore fallback deletePatient:', error);
+    console.warn('Supabase fallback deletePatient:', error);
   }
   const records = getLocal<PatientRecord>('tblPateint', []);
   setLocal('tblPateint', records.filter(r => r.id !== id));
@@ -276,14 +301,21 @@ export const deletePatient = async (id: string): Promise<void> => {
 // ==================== tbldis (Comorbidities) ====================
 export const getDiseaseRecords = async (): Promise<DiseaseRecord[]> => {
   try {
-    const snap = await getDocs(collection(db, 'tbldis'));
-    const items: DiseaseRecord[] = [];
-    snap.forEach(d => {
-      items.push({ id: d.id, ...(d.data() as DiseaseRecord) });
-    });
-    setLocal('tbldis', items);
-    return items;
+    const { data, error } = await supabase
+      .from('tbldis')
+      .select('*')
+      .order('createdAt', { ascending: false });
+
+    if (!error && data) {
+      setLocal('tbldis', data);
+      return data as DiseaseRecord[];
+    }
+    if (error) {
+      console.warn('Supabase getDiseaseRecords error:', error.message);
+    }
+    return getLocal('tbldis', []);
   } catch (error) {
+    console.warn('Supabase fallback getDiseaseRecords:', error);
     return getLocal('tbldis', []);
   }
 };
@@ -294,21 +326,37 @@ export const addDiseaseRecord = async (record: Omit<DiseaseRecord, 'id'>): Promi
     createdAt: new Date().toISOString()
   };
   try {
-    const docRef = await addDoc(collection(db, 'tbldis'), newRec);
-    const list = await getDiseaseRecords();
-    setLocal('tbldis', [{ id: docRef.id, ...newRec }, ...list]);
-    return docRef.id;
+    const { data, error } = await supabase
+      .from('tbldis')
+      .insert([newRec])
+      .select('id')
+      .single();
+
+    if (!error && data?.id) {
+      const list = await getDiseaseRecords();
+      setLocal('tbldis', [{ id: data.id, ...newRec }, ...list]);
+      return data.id;
+    }
   } catch (error) {
-    const localId = `dis_${Date.now()}`;
-    const list = getLocal<DiseaseRecord>('tbldis', []);
-    setLocal('tbldis', [{ id: localId, ...newRec }, ...list]);
-    return localId;
+    console.warn('Supabase fallback addDiseaseRecord:', error);
   }
+
+  const localId = `dis_${Date.now()}`;
+  const list = getLocal<DiseaseRecord>('tbldis', []);
+  setLocal('tbldis', [{ id: localId, ...newRec }, ...list]);
+  return localId;
 };
 
 export const updateDiseaseRecord = async (id: string, updates: Partial<DiseaseRecord>): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'tbldis', id), updates);
+    const { error } = await supabase
+      .from('tbldis')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Fallback update tbldis error:', error.message);
+    }
   } catch (error) {
     console.warn('Fallback update tbldis', error);
   }
@@ -318,7 +366,14 @@ export const updateDiseaseRecord = async (id: string, updates: Partial<DiseaseRe
 
 export const deleteDiseaseRecord = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tbldis', id));
+    const { error } = await supabase
+      .from('tbldis')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Fallback delete tbldis error:', error.message);
+    }
   } catch (error) {
     console.warn('Fallback delete tbldis', error);
   }
@@ -329,14 +384,21 @@ export const deleteDiseaseRecord = async (id: string): Promise<void> => {
 // ==================== tblOperation (Complications) ====================
 export const getOperationRecords = async (): Promise<ComplicationRecord[]> => {
   try {
-    const snap = await getDocs(collection(db, 'tblOperation'));
-    const items: ComplicationRecord[] = [];
-    snap.forEach(d => {
-      items.push({ id: d.id, ...(d.data() as ComplicationRecord) });
-    });
-    setLocal('tblOperation', items);
-    return items;
+    const { data, error } = await supabase
+      .from('tblOperation')
+      .select('*')
+      .order('createdAt', { ascending: false });
+
+    if (!error && data) {
+      setLocal('tblOperation', data);
+      return data as ComplicationRecord[];
+    }
+    if (error) {
+      console.warn('Supabase getOperationRecords error:', error.message);
+    }
+    return getLocal('tblOperation', []);
   } catch (error) {
+    console.warn('Supabase fallback getOperationRecords:', error);
     return getLocal('tblOperation', []);
   }
 };
@@ -347,21 +409,37 @@ export const addOperationRecord = async (record: Omit<ComplicationRecord, 'id'>)
     createdAt: new Date().toISOString()
   };
   try {
-    const docRef = await addDoc(collection(db, 'tblOperation'), newRec);
-    const list = await getOperationRecords();
-    setLocal('tblOperation', [{ id: docRef.id, ...newRec }, ...list]);
-    return docRef.id;
+    const { data, error } = await supabase
+      .from('tblOperation')
+      .insert([newRec])
+      .select('id')
+      .single();
+
+    if (!error && data?.id) {
+      const list = await getOperationRecords();
+      setLocal('tblOperation', [{ id: data.id, ...newRec }, ...list]);
+      return data.id;
+    }
   } catch (error) {
-    const localId = `oper_${Date.now()}`;
-    const list = getLocal<ComplicationRecord>('tblOperation', []);
-    setLocal('tblOperation', [{ id: localId, ...newRec }, ...list]);
-    return localId;
+    console.warn('Supabase fallback addOperationRecord:', error);
   }
+
+  const localId = `oper_${Date.now()}`;
+  const list = getLocal<ComplicationRecord>('tblOperation', []);
+  setLocal('tblOperation', [{ id: localId, ...newRec }, ...list]);
+  return localId;
 };
 
 export const updateOperationRecord = async (id: string, updates: Partial<ComplicationRecord>): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'tblOperation', id), updates);
+    const { error } = await supabase
+      .from('tblOperation')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Fallback update tblOperation error:', error.message);
+    }
   } catch (error) {
     console.warn('Fallback update tblOperation', error);
   }
@@ -371,7 +449,14 @@ export const updateOperationRecord = async (id: string, updates: Partial<Complic
 
 export const deleteOperationRecord = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tblOperation', id));
+    const { error } = await supabase
+      .from('tblOperation')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Fallback delete tblOperation error:', error.message);
+    }
   } catch (error) {
     console.warn('Fallback delete tblOperation', error);
   }
@@ -382,14 +467,21 @@ export const deleteOperationRecord = async (id: string): Promise<void> => {
 // ==================== tblDrugServ (Medication Records) ====================
 export const getDrugServRecords = async (): Promise<DrugServRecord[]> => {
   try {
-    const snap = await getDocs(collection(db, 'tblDrugServ'));
-    const items: DrugServRecord[] = [];
-    snap.forEach(d => {
-      items.push({ id: d.id, ...(d.data() as DrugServRecord) });
-    });
-    setLocal('tblDrugServ', items);
-    return items;
+    const { data, error } = await supabase
+      .from('tblDrugServ')
+      .select('*')
+      .order('createdAt', { ascending: false });
+
+    if (!error && data) {
+      setLocal('tblDrugServ', data);
+      return data as DrugServRecord[];
+    }
+    if (error) {
+      console.warn('Supabase getDrugServRecords error:', error.message);
+    }
+    return getLocal('tblDrugServ', []);
   } catch (error) {
+    console.warn('Supabase fallback getDrugServRecords:', error);
     return getLocal('tblDrugServ', []);
   }
 };
@@ -400,21 +492,37 @@ export const addDrugServRecord = async (record: Omit<DrugServRecord, 'id'>): Pro
     createdAt: new Date().toISOString()
   };
   try {
-    const docRef = await addDoc(collection(db, 'tblDrugServ'), newRec);
-    const list = await getDrugServRecords();
-    setLocal('tblDrugServ', [{ id: docRef.id, ...newRec }, ...list]);
-    return docRef.id;
+    const { data, error } = await supabase
+      .from('tblDrugServ')
+      .insert([newRec])
+      .select('id')
+      .single();
+
+    if (!error && data?.id) {
+      const list = await getDrugServRecords();
+      setLocal('tblDrugServ', [{ id: data.id, ...newRec }, ...list]);
+      return data.id;
+    }
   } catch (error) {
-    const localId = `drug_${Date.now()}`;
-    const list = getLocal<DrugServRecord>('tblDrugServ', []);
-    setLocal('tblDrugServ', [{ id: localId, ...newRec }, ...list]);
-    return localId;
+    console.warn('Supabase fallback addDrugServRecord:', error);
   }
+
+  const localId = `drug_${Date.now()}`;
+  const list = getLocal<DrugServRecord>('tblDrugServ', []);
+  setLocal('tblDrugServ', [{ id: localId, ...newRec }, ...list]);
+  return localId;
 };
 
 export const updateDrugServRecord = async (id: string, updates: Partial<DrugServRecord>): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'tblDrugServ', id), updates);
+    const { error } = await supabase
+      .from('tblDrugServ')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Fallback update tblDrugServ error:', error.message);
+    }
   } catch (error) {
     console.warn('Fallback update tblDrugServ', error);
   }
@@ -424,7 +532,14 @@ export const updateDrugServRecord = async (id: string, updates: Partial<DrugServ
 
 export const deleteDrugServRecord = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tblDrugServ', id));
+    const { error } = await supabase
+      .from('tblDrugServ')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.warn('Fallback delete tblDrugServ error:', error.message);
+    }
   } catch (error) {
     console.warn('Fallback delete tblDrugServ', error);
   }
@@ -435,22 +550,24 @@ export const deleteDrugServRecord = async (id: string): Promise<void> => {
 // ==================== Master Data (tbldisname, tblcom, tbldrug) ====================
 export const getMasterDiseases = async (): Promise<MasterDisease[]> => {
   try {
-    const snap = await getDocs(collection(db, 'tbldisname'));
-    const items: MasterDisease[] = [];
-    snap.forEach(d => items.push({ id: d.id, ...(d.data() as MasterDisease) }));
-    if (items.length > 0) {
-      setLocal('tbldisname', items);
-      return items;
+    const { data, error } = await supabase
+      .from('tbldisname')
+      .select('*')
+      .order('dis', { ascending: true });
+
+    if (!error && data && data.length > 0) {
+      setLocal('tbldisname', data);
+      return data as MasterDisease[];
     }
   } catch (e) {
-    console.warn(e);
+    console.warn('Supabase getMasterDiseases notice:', e);
   }
   return getLocal('tbldisname', INITIAL_DISEASES.map((d, i) => ({ id: `dis_${i}`, dis: d })));
 };
 
 export const addMasterDisease = async (dis: string): Promise<void> => {
   try {
-    await addDoc(collection(db, 'tbldisname'), { dis });
+    await supabase.from('tbldisname').insert([{ dis }]);
   } catch (e) {
     console.warn(e);
   }
@@ -460,7 +577,7 @@ export const addMasterDisease = async (dis: string): Promise<void> => {
 
 export const updateMasterDisease = async (id: string, dis: string): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'tbldisname', id), { dis });
+    await supabase.from('tbldisname').update({ dis }).eq('id', id);
   } catch (e) {
     console.warn(e);
   }
@@ -470,7 +587,7 @@ export const updateMasterDisease = async (id: string, dis: string): Promise<void
 
 export const deleteMasterDisease = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tbldisname', id));
+    await supabase.from('tbldisname').delete().eq('id', id);
   } catch (e) {
     console.warn(e);
   }
@@ -481,22 +598,24 @@ export const deleteMasterDisease = async (id: string): Promise<void> => {
 // Master Complications
 export const getMasterComplications = async (): Promise<MasterComplication[]> => {
   try {
-    const snap = await getDocs(collection(db, 'tblcom'));
-    const items: MasterComplication[] = [];
-    snap.forEach(d => items.push({ id: d.id, ...(d.data() as MasterComplication) }));
-    if (items.length > 0) {
-      setLocal('tblcom', items);
-      return items;
+    const { data, error } = await supabase
+      .from('tblcom')
+      .select('*')
+      .order('Complication', { ascending: true });
+
+    if (!error && data && data.length > 0) {
+      setLocal('tblcom', data);
+      return data as MasterComplication[];
     }
   } catch (e) {
-    console.warn(e);
+    console.warn('Supabase getMasterComplications notice:', e);
   }
   return getLocal('tblcom', INITIAL_COMPLICATIONS.map((c, i) => ({ id: `com_${i}`, Complication: c })));
 };
 
 export const addMasterComplication = async (Complication: string): Promise<void> => {
   try {
-    await addDoc(collection(db, 'tblcom'), { Complication });
+    await supabase.from('tblcom').insert([{ Complication }]);
   } catch (e) {
     console.warn(e);
   }
@@ -506,7 +625,7 @@ export const addMasterComplication = async (Complication: string): Promise<void>
 
 export const updateMasterComplication = async (id: string, Complication: string): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'tblcom', id), { Complication });
+    await supabase.from('tblcom').update({ Complication }).eq('id', id);
   } catch (e) {
     console.warn(e);
   }
@@ -516,7 +635,7 @@ export const updateMasterComplication = async (id: string, Complication: string)
 
 export const deleteMasterComplication = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tblcom', id));
+    await supabase.from('tblcom').delete().eq('id', id);
   } catch (e) {
     console.warn(e);
   }
@@ -527,22 +646,24 @@ export const deleteMasterComplication = async (id: string): Promise<void> => {
 // Master Drugs
 export const getMasterDrugs = async (): Promise<MasterDrug[]> => {
   try {
-    const snap = await getDocs(collection(db, 'tbldrug'));
-    const items: MasterDrug[] = [];
-    snap.forEach(d => items.push({ id: d.id, ...(d.data() as MasterDrug) }));
-    if (items.length > 0) {
-      setLocal('tbldrug', items);
-      return items;
+    const { data, error } = await supabase
+      .from('tbldrug')
+      .select('*')
+      .order('drugname', { ascending: true });
+
+    if (!error && data && data.length > 0) {
+      setLocal('tbldrug', data);
+      return data as MasterDrug[];
     }
   } catch (e) {
-    console.warn(e);
+    console.warn('Supabase getMasterDrugs notice:', e);
   }
   return getLocal('tbldrug', INITIAL_DRUGS.map((dr, i) => ({ id: `drug_${i}`, drugname: dr })));
 };
 
 export const addMasterDrug = async (drugname: string): Promise<void> => {
   try {
-    await addDoc(collection(db, 'tbldrug'), { drugname });
+    await supabase.from('tbldrug').insert([{ drugname }]);
   } catch (e) {
     console.warn(e);
   }
@@ -552,7 +673,7 @@ export const addMasterDrug = async (drugname: string): Promise<void> => {
 
 export const updateMasterDrug = async (id: string, drugname: string): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'tbldrug', id), { drugname });
+    await supabase.from('tbldrug').update({ drugname }).eq('id', id);
   } catch (e) {
     console.warn(e);
   }
@@ -562,7 +683,7 @@ export const updateMasterDrug = async (id: string, drugname: string): Promise<vo
 
 export const deleteMasterDrug = async (id: string): Promise<void> => {
   try {
-    await deleteDoc(doc(db, 'tbldrug', id));
+    await supabase.from('tbldrug').delete().eq('id', id);
   } catch (e) {
     console.warn(e);
   }

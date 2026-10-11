@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, LogOut, User, Activity, Hospital } from 'lucide-react';
+import { Menu, LogOut, User, Activity, Hospital, Database } from 'lucide-react';
 import { UserLogin } from '../../types';
 
 interface NavbarProps {
@@ -7,13 +7,15 @@ interface NavbarProps {
   onToggleMenu: () => void;
   onLogout: () => void;
   activeMenuTitle: string;
+  onOpenSchema?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   onToggleMenu,
   onLogout,
-  activeMenuTitle
+  activeMenuTitle,
+  onOpenSchema
 }) => {
   const userInitial = currentUser?.AN ? currentUser.AN.trim().charAt(0) : 'A';
 
@@ -56,8 +58,21 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="font-semibold text-emerald-900">{activeMenuTitle}</span>
           </div>
 
-          {/* Right: Current User & Logout */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          {/* Right: Supabase Schema Button, Current User & Logout */}
+          <div className="flex items-center gap-2.5 sm:gap-4">
+            {onOpenSchema && (
+              <button
+                type="button"
+                onClick={onOpenSchema}
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200/80 rounded-lg transition-colors border border-emerald-300 shadow-2xs"
+                title="ดูโครงสร้างตาราง Supabase (SQL Schema)"
+              >
+                <Database className="w-3.5 h-3.5 text-emerald-700" />
+                <span className="hidden sm:inline">โครงสร้าง Supabase SQL</span>
+                <span className="sm:hidden">SQL</span>
+              </button>
+            )}
+
             {currentUser && (
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
