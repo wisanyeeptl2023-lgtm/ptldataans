@@ -59,7 +59,7 @@ export interface ComplicationRecord {
   idoper: string; // รูปแบบ yyyyMMDDHHmmss
   idpat: string; // ดึงจาก tblPateint
   Complication: string; // ดึงจาก tblcom
-  riskroom: 'ห้องผ่าตัด' | 'ห้องพักฟื้น';
+  riskroom: 'ห้องผ่าตัด' | 'ห้องพักฟื้น' | 'หอผู้ป่วย' | string;
   hn: string; // ค้นหาจาก tblPateint
   createdAt?: string;
 }

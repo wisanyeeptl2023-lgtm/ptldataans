@@ -37,7 +37,7 @@ export const ComplicationRecordView: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<PatientRecord | null>(null);
   const [selectedComplication, setSelectedComplication] = useState<string>('');
   const [customComplication, setCustomComplication] = useState<string>('');
-  const [riskroom, setRiskroom] = useState<'ห้องผ่าตัด' | 'ห้องพักฟื้น'>('ห้องผ่าตัด');
+  const [riskroom, setRiskroom] = useState<'ห้องผ่าตัด' | 'ห้องพักฟื้น' | 'หอผู้ป่วย'>('ห้องผ่าตัด');
   const [hnSearchQuery, setHnSearchQuery] = useState<string>('');
 
   const loadAll = async () => {
@@ -80,7 +80,7 @@ export const ComplicationRecordView: React.FC = () => {
     } as PatientRecord;
     setSelectedPatient(pat);
     setSelectedComplication(item.Complication);
-    setRiskroom(item.riskroom);
+    setRiskroom((item.riskroom as any) || 'ห้องผ่าตัด');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -283,7 +283,7 @@ export const ComplicationRecordView: React.FC = () => {
             />
           </div>
 
-          {/* riskroom label "ห้อง" ตัวเลือก "ห้องผ่าตัด","ห้องพักฟื้น" */}
+          {/* riskroom label "ห้อง" ตัวเลือก "ห้องผ่าตัด","ห้องพักฟื้น","หอผู้ป่วย" */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               ห้องที่เกิดภาวะแทรกซ้อน (riskroom) <span className="text-red-500">*</span>
@@ -291,11 +291,12 @@ export const ComplicationRecordView: React.FC = () => {
             <select
               id="tbloper-riskroom-select"
               value={riskroom}
-              onChange={e => setRiskroom(e.target.value as 'ห้องผ่าตัด' | 'ห้องพักฟื้น')}
+              onChange={e => setRiskroom(e.target.value as 'ห้องผ่าตัด' | 'ห้องพักฟื้น' | 'หอผู้ป่วย')}
               className="w-full px-3 py-2 text-xs bg-white border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 text-slate-800 font-medium"
             >
               <option value="ห้องผ่าตัด">ห้องผ่าตัด (OR)</option>
               <option value="ห้องพักฟื้น">ห้องพักฟื้น (PACU)</option>
+              <option value="หอผู้ป่วย">หอผู้ป่วย (Ward)</option>
             </select>
           </div>
 
