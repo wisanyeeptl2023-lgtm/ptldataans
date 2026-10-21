@@ -46,7 +46,7 @@ export const PatientDashboard: React.FC = () => {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const [selectedBreakdown, setSelectedBreakdown] = useState<
-    'sex' | 'ASA' | 'pct' | 'tegnic' | 'Airway' | 'disect' | 'PainIn' | 'PainOut' | 'postopvisit' | 'AN' | 'chknote'
+    'sex' | 'ASA' | 'pct' | 'tegnic' | 'Airway' | 'CaseCode' | 'disect' | 'PainIn' | 'PainOut' | 'postopvisit' | 'AN' | 'chknote'
   >('tegnic');
 
   const loadData = async () => {
@@ -135,6 +135,7 @@ export const PatientDashboard: React.FC = () => {
     pct: 'แผนก (pct)',
     tegnic: 'วิธีระงับความรู้สึก (tegnic)',
     Airway: 'ทางเดินหายใจ (Airway)',
+    CaseCode: 'ประเภทเคส (CaseCode)',
     disect: 'อุณหภูมิร่างกาย (disect)',
     PainIn: 'Pain In',
     PainOut: 'Pain Out',

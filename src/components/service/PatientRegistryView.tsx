@@ -23,10 +23,10 @@ interface PatientRegistryViewProps {
 }
 
 const ASA_OPTIONS = ['1', '1E', '2', '2E', '3', '3E', '4', '4E', '5', '5E', '6', '6E'];
-const PCT_OPTIONS = ['CVT', 'Dental', 'ENT', 'Eye', 'Gen', 'Neuro', 'Obs-Gyn', 'Ortho', 'ped', 'plastic', 'uro'];
-const TEGNIC_OPTIONS = ['EB', 'GA', 'GA+EB', 'MAC', 'NB', 'SB', 'SB+GA', 'SB+EB', 'SB+NB', 'TIVA', 'NB+TIVA'];
-const AIRWAY_OPTIONS = ['ETT', 'LMA', 'Mask', 'Mask c bag', 'Tracheostomy', 'Nasal Cannula'];
-const CASE_CODE_OPTIONS = ['Elective', 'Elective นอกเวลา', 'Emergency นอก', 'Emergency ใน', 'add on'];
+const PCT_OPTIONS = ['CVT', 'Dental', 'ENT', 'Eye', 'Gen-surg', 'Med', 'Neuro', 'Obs-Gyn', 'Ortho', 'ped', 'plastic', 'uro'];
+const TEGNIC_OPTIONS = ['GA', 'GA+EB', 'GA+NB', 'MAC', 'NB', 'SB', 'SB+EB', 'SB+NB', 'TIVA', 'NB+TIVA'];
+const AIRWAY_OPTIONS = ['ETT', 'LMA', 'Under mask', 'Room air', 'Mask c bag', 'Tracheostomy', 'Nasal Cannula'];
+const CASE_CODE_OPTIONS = ['Elective', 'Elective นอกเวลา', 'Emergency นอก', 'Emergency ใน', 'add on', 'OPD', 'Add on plus'];
 const PAIN_OPTIONS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
 export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ currentUser }) => {
@@ -45,7 +45,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
   const [sex, setSex] = useState<'ชาย' | 'หญิง'>('ชาย');
   const [age, setAge] = useState<string>('');
   const [asa, setAsa] = useState<PatientRecord['ASA']>('1');
-  const [pct, setPct] = useState<PatientRecord['pct']>('Gen');
+  const [pct, setPct] = useState<PatientRecord['pct']>('Gen-surg');
   const [tegnic, setTegnic] = useState<PatientRecord['tegnic']>('GA');
   const [airway, setAirway] = useState<PatientRecord['Airway']>('ETT');
   const [timeOR, setTimeOR] = useState<string>('');
@@ -54,7 +54,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
   const [painIn, setPainIn] = useState<string>('0');
   const [painOut, setPainOut] = useState<string>('0');
   const [timePACU, setTimePACU] = useState<string>('');
-  const [postopvisit, setPostopvisit] = useState<'yes' | 'no'>('no');
+  const [postopvisit, setPostopvisit] = useState<PatientRecord['postopvisit']>('no');
   const [anNurse, setAnNurse] = useState<string>(currentUser.AN || '');
   const [optionalDiseasesOpen, setOptionalDiseasesOpen] = useState<boolean>(false);
   const [chronicNote, setChronicNote] = useState<string>('');
@@ -88,7 +88,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
     setSex('ชาย');
     setAge('');
     setAsa('1');
-    setPct('Gen');
+    setPct('Gen-surg');
     setTegnic('GA');
     setAirway('ETT');
     setTimeOR('');
@@ -111,7 +111,7 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
     setSex(p.sex || 'ชาย');
     setAge(p.age || '');
     setAsa(p.ASA || '1');
-    setPct(p.pct || 'Gen');
+    setPct(p.pct || 'Gen-surg');
     setTegnic(p.tegnic || 'GA');
     setAirway(p.Airway || 'ETT');
     setTimeOR(p.TimeOR || '');
@@ -556,11 +556,12 @@ export const PatientRegistryView: React.FC<PatientRegistryViewProps> = ({ curren
               <select
                 id="form-pat-postop"
                 value={postopvisit}
-                onChange={e => setPostopvisit(e.target.value as 'yes' | 'no')}
+                onChange={e => setPostopvisit(e.target.value as PatientRecord['postopvisit'])}
                 className="w-full px-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               >
                 <option value="no">no (ยังไม่ได้เยี่ยม)</option>
                 <option value="yes">yes (เยี่ยมแล้ว)</option>
+                <option value="D/C ก่อนเยี่ยม">D/C ก่อนเยี่ยม</option>
               </select>
             </div>
 

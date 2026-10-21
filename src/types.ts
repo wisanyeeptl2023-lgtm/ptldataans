@@ -16,16 +16,16 @@ export interface PatientRecord {
   sex: 'ชาย' | 'หญิง';
   age: string; // อายุ
   ASA: '1' | '1E' | '2' | '2E' | '3' | '3E' | '4' | '4E' | '5' | '5E' | '6' | '6E';
-  pct: 'CVT' | 'Dental' | 'ENT' | 'Eye' | 'Gen' | 'Neuro' | 'Obs-Gyn' | 'Ortho' | 'ped' | 'plastic' | 'uro';
-  tegnic: 'EB' | 'GA' | 'GA+EB' | 'MAC' | 'NB' | 'SB' | 'SB+GA' | 'SB+EB' | 'SB+NB' | 'TIVA' | 'NB+TIVA';
-  Airway: 'ETT' | 'LMA' | 'Mask' | 'Mask c bag' | 'Tracheostomy' | 'Nasal Cannula';
+  pct: 'CVT' | 'Dental' | 'ENT' | 'Eye' | 'Gen-surg' | 'Med' | 'Neuro' | 'Obs-Gyn' | 'Ortho' | 'ped' | 'plastic' | 'uro';
+  tegnic: 'GA' | 'GA+EB' | 'GA+NB' | 'MAC' | 'NB' | 'SB' | 'SB+EB' | 'SB+NB' | 'TIVA' | 'NB+TIVA';
+  Airway: 'ETT' | 'LMA' | 'Under mask' | 'Room air' | 'Mask c bag' | 'Tracheostomy' | 'Nasal Cannula';
   TimeOR: string; // ระยะเวลาผ่าตัด (นาที)
-  CaseCode: 'Elective' | 'Elective นอกเวลา' | 'Emergency นอก' | 'Emergency ใน' | 'add on';
+  CaseCode: 'Elective' | 'Elective นอกเวลา' | 'Emergency นอก' | 'Emergency ใน' | 'add on' | 'OPD' | 'Add on plus';
   disect: string; // อุณหภูมิร่างกาย (เช่น 36.5)
   PainIn: string; // 0 - 10
   PainOut: string; // 0 - 10
   TimePACU: string; // ระยะเวลาในห้องพักฟื้น (นาที)
-  postopvisit: 'yes' | 'no';
+  postopvisit: 'yes' | 'no' | 'D/C ก่อนเยี่ยม';
   AN: string; // ชื่อพยาบาลดมยา
   chknote: string; // ชื่อผู้บันทึกข้อมูล (นำมาจาก tbllogin คอลัมน์ AN ของผู้ล็อกอิน)
   idpat: string; // คำนวณ hn & ":" & operdate & ":" & no

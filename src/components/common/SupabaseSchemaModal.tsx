@@ -33,16 +33,16 @@ CREATE TABLE IF NOT EXISTS "tblPateint" (
     sex TEXT NOT NULL,
     age TEXT NOT NULL,
     "ASA" TEXT NOT NULL,
-    pct TEXT NOT NULL,
-    tegnic TEXT NOT NULL,
-    "Airway" TEXT NOT NULL,
+    pct TEXT NOT NULL, -- เช่น 'CVT', 'Dental', 'ENT', 'Eye', 'Gen-surg', 'Med', 'Neuro', 'Obs-Gyn', 'Ortho', 'ped', 'plastic', 'uro'
+    tegnic TEXT NOT NULL, -- เช่น 'GA', 'GA+EB', 'GA+NB', 'MAC', 'NB', 'SB', 'SB+EB', 'SB+NB', 'TIVA', 'NB+TIVA'
+    "Airway" TEXT NOT NULL, -- เช่น 'ETT', 'LMA', 'Under mask', 'Room air', 'Mask c bag', 'Tracheostomy', 'Nasal Cannula'
     "TimeOR" TEXT DEFAULT '0',
-    "CaseCode" TEXT NOT NULL,
+    "CaseCode" TEXT NOT NULL, -- เช่น 'Elective', 'Elective นอกเวลา', 'Emergency นอก', 'Emergency ใน', 'add on', 'OPD', 'Add on plus'
     disect TEXT DEFAULT '',
     "PainIn" TEXT DEFAULT '0',
     "PainOut" TEXT DEFAULT '0',
     "TimePACU" TEXT DEFAULT '0',
-    postopvisit TEXT NOT NULL DEFAULT 'no',
+    postopvisit TEXT NOT NULL DEFAULT 'no', -- เช่น 'no', 'yes', 'D/C ก่อนเยี่ยม'
     "AN" TEXT NOT NULL,
     chknote TEXT NOT NULL,
     idpat TEXT NOT NULL,
