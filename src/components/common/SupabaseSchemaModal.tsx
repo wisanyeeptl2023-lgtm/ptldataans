@@ -93,7 +93,58 @@ CREATE TABLE IF NOT EXISTS "tblDrugServ" (
     "createdAt" TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. ตาราง Master ข้อมูลพื้นฐาน
+-- 6. ตาราง tblsentwage (ติดตามการส่งเวร SBAR)
+CREATE TABLE IF NOT EXISTS tblsentwage (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    idwage TEXT NOT NULL,
+    notedate TEXT NOT NULL,
+    hn TEXT DEFAULT '',
+    asa TEXT DEFAULT '1',
+    -- Suitiation
+    s1 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    s2 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    s3 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    s4 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    s5 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    -- Background
+    b1 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    b2 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    b3 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    b4 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    b5 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    b6 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    b7 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    -- Assessment
+    a1 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    a2 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    a3 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    a4 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    a5 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    a6 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    a7 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    -- Recommendation
+    r1 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    r2 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    r3 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    r4 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    r5 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    r6 TEXT NOT NULL DEFAULT 'ปฏิบัติครบ',
+    -- Calculation and Metadata
+    point NUMERIC NOT NULL DEFAULT 50,
+    percent NUMERIC NOT NULL DEFAULT 100,
+    ect TEXT DEFAULT '',
+    sentwage TEXT NOT NULL,
+    ownercase TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Migration columns for existing tblsentwage tables if already created
+ALTER TABLE tblsentwage ADD COLUMN IF NOT EXISTS "HN" TEXT DEFAULT '';
+ALTER TABLE tblsentwage ADD COLUMN IF NOT EXISTS "ASA" TEXT DEFAULT '1';
+ALTER TABLE tblsentwage ADD COLUMN IF NOT EXISTS hn TEXT DEFAULT '';
+ALTER TABLE tblsentwage ADD COLUMN IF NOT EXISTS asa TEXT DEFAULT '1';
+
+-- 7. ตาราง Master ข้อมูลพื้นฐาน
 CREATE TABLE IF NOT EXISTS tbldisname (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     dis TEXT NOT NULL UNIQUE,
@@ -118,6 +169,7 @@ ALTER TABLE "tblPateint" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tbldis ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "tblOperation" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "tblDrugServ" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tblsentwage ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tbldisname ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tblcom ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tbldrug ENABLE ROW LEVEL SECURITY;
@@ -127,6 +179,7 @@ CREATE POLICY "Allow anon all tblPateint" ON "tblPateint" FOR ALL USING (true) W
 CREATE POLICY "Allow anon all tbldis" ON tbldis FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon all tblOperation" ON "tblOperation" FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon all tblDrugServ" ON "tblDrugServ" FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow anon all tblsentwage" ON tblsentwage FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon all tbldisname" ON tbldisname FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon all tblcom" ON tblcom FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow anon all tbldrug" ON tbldrug FOR ALL USING (true) WITH CHECK (true);
@@ -202,7 +255,7 @@ ON CONFLICT (drugname) DO NOTHING;`;
               <Table className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
               <div>
                 <span className="text-xs font-bold text-teal-900 block">จำนวนตารางทั้งหมด</span>
-                <span className="text-xs text-teal-800">8 ตาราง (5 บริการ + 3 มาสเตอร์)</span>
+                <span className="text-xs text-teal-800">9 ตาราง (6 บริการ + 3 มาสเตอร์)</span>
               </div>
             </div>
             <div className="p-3 bg-cyan-50 rounded-xl border border-cyan-200 flex items-start gap-2.5">

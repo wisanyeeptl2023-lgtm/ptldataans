@@ -22,7 +22,12 @@ export const showErrorAlert = async (title: string, text?: string) => {
   });
 };
 
-export const showConfirmDialog = async (title: string, text: string): Promise<boolean> => {
+export const showConfirmDialog = async (
+  title: string,
+  text: string,
+  confirmButtonText: string = 'ตกลง',
+  cancelButtonText: string = 'ยกเลิก'
+): Promise<boolean> => {
   const result = await Swal.fire({
     title,
     text,
@@ -30,15 +35,16 @@ export const showConfirmDialog = async (title: string, text: string): Promise<bo
     showCancelButton: true,
     confirmButtonColor: '#ef4444',
     cancelButtonColor: '#64748b',
-    confirmButtonText: 'ยืนยันลบ',
-    cancelButtonText: 'ยกเลิก',
+    confirmButtonText,
+    cancelButtonText,
   });
   return result.isConfirmed;
 };
 
-export const showLoadingAlert = (title: string = 'กำลังบันทึกข้อมูล...') => {
+export const showLoadingAlert = (title: string = 'กำลังบันทึกข้อมูล...', text?: string) => {
   Swal.fire({
     title,
+    text,
     allowOutsideClick: false,
     didOpen: () => {
       Swal.showLoading();

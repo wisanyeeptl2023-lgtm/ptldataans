@@ -9,6 +9,7 @@ import { PatientRegistryView } from './components/service/PatientRegistryView';
 import { DiseaseRecordView } from './components/service/DiseaseRecordView';
 import { ComplicationRecordView } from './components/service/ComplicationRecordView';
 import { DrugRecordView } from './components/service/DrugRecordView';
+import { SentwageRecordView } from './components/service/SentwageRecordView';
 
 // Master Data Views
 import { MasterDataView } from './components/master/MasterDataView';
@@ -19,6 +20,7 @@ import { PatientDashboard } from './components/dashboard/PatientDashboard';
 import { DiseaseDashboard } from './components/dashboard/DiseaseDashboard';
 import { ComplicationDashboard } from './components/dashboard/ComplicationDashboard';
 import { DrugDashboard } from './components/dashboard/DrugDashboard';
+import { SentwageDashboard } from './components/dashboard/SentwageDashboard';
 
 import { showSuccessAlert, showConfirmDialog } from './utils/sweetalert';
 import { SupabaseSchemaModal } from './components/common/SupabaseSchemaModal';
@@ -68,6 +70,8 @@ export default function App() {
         return 'บันทึก Complication';
       case 'service_drug':
         return 'บันทึกยา';
+      case 'service_sentwage':
+        return 'ติดตามการส่งเวร';
       case 'master_disease':
         return 'ข้อมูลโรคประจำตัว';
       case 'master_complication':
@@ -84,6 +88,8 @@ export default function App() {
         return 'รายงาน Complication';
       case 'dashboard_drug':
         return 'รายงานยา';
+      case 'dashboard_sentwage':
+        return 'รายงานส่งเวร';
       default:
         return 'ระบบงานวิสัญญี';
     }
@@ -134,6 +140,7 @@ export default function App() {
         {activeTab === 'service_disease' && <DiseaseRecordView />}
         {activeTab === 'service_complication' && <ComplicationRecordView />}
         {activeTab === 'service_drug' && <DrugRecordView />}
+        {activeTab === 'service_sentwage' && <SentwageRecordView />}
 
         {activeTab === 'master_disease' && <MasterDataView type="disease" />}
         {activeTab === 'master_complication' && <MasterDataView type="complication" />}
@@ -144,6 +151,7 @@ export default function App() {
         {activeTab === 'dashboard_disease' && <DiseaseDashboard />}
         {activeTab === 'dashboard_complication' && <ComplicationDashboard />}
         {activeTab === 'dashboard_drug' && <DrugDashboard />}
+        {activeTab === 'dashboard_sentwage' && <SentwageDashboard />}
       </main>
 
       {/* Custom Bottom Status Bar from Natural Tones Theme */}

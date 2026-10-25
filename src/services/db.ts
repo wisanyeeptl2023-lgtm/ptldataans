@@ -7,8 +7,11 @@ import {
   DrugServRecord,
   MasterDisease,
   MasterComplication,
-  MasterDrug
+  MasterDrug,
+  SentwageRecord,
+  AsaLevel
 } from '../types';
+import { convertIsoToBEDate, convertBEDateToIso, getTodayBEDate } from '../utils/dateUtils';
 
 // Initial seeds fallback
 const INITIAL_USERS: UserLogin[] = [
@@ -689,4 +692,293 @@ export const deleteMasterDrug = async (id: string): Promise<void> => {
   }
   const items = await getMasterDrugs();
   setLocal('tbldrug', items.filter(x => x.id !== id));
+};
+
+// ==================== tblsentwage (Shift Handover Tracking) ====================
+
+const INITIAL_SENTWAGES: SentwageRecord[] = [];
+
+export const getSentwages = async (): Promise<SentwageRecord[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('tblsentwage')
+      .select('*')
+      .order('idwage', { ascending: false });
+
+    if (!error && data) {
+      const normalized: SentwageRecord[] = data.map((r: any) => ({
+        id: r.id || r.idwage,
+        idwage: r.idwage || '',
+        notedate: r.notedate
+          ? (r.notedate.includes('-') ? convertIsoToBEDate(r.notedate) : r.notedate)
+          : getTodayBEDate(),
+        hn: r.HN ?? r.hn ?? '',
+        asa: (r.ASA ?? r.asa ?? '1') as AsaLevel,
+        s1: r.s1 || 'ปฏิบัติครบ',
+        s2: r.s2 || 'ปฏิบัติครบ',
+        s3: r.s3 || 'ปฏิบัติครบ',
+        s4: r.s4 || 'ปฏิบัติครบ',
+        s5: r.s5 || 'ปฏิบัติครบ',
+        b1: r.b1 || 'ปฏิบัติครบ',
+        b2: r.b2 || 'ปฏิบัติครบ',
+        b3: r.b3 || 'ปฏิบัติครบ',
+        b4: r.b4 || 'ปฏิบัติครบ',
+        b5: r.b5 || 'ปฏิบัติครบ',
+        b6: r.b6 || 'ปฏิบัติครบ',
+        b7: r.b7 || 'ปฏิบัติครบ',
+        a1: r.a1 || 'ปฏิบัติครบ',
+        a2: r.a2 || 'ปฏิบัติครบ',
+        a3: r.a3 || 'ปฏิบัติครบ',
+        a4: r.a4 || 'ปฏิบัติครบ',
+        a5: r.a5 || 'ปฏิบัติครบ',
+        a6: r.a6 || 'ปฏิบัติครบ',
+        a7: r.a7 || 'ปฏิบัติครบ',
+        r1: r.r1 || 'ปฏิบัติครบ',
+        r2: r.r2 || 'ปฏิบัติครบ',
+        r3: r.r3 || 'ปฏิบัติครบ',
+        r4: r.r4 || 'ปฏิบัติครบ',
+        r5: r.r5 || 'ปฏิบัติครบ',
+        r6: r.r6 || 'ปฏิบัติครบ',
+        point: Number(r.point ?? 0),
+        percent: Number(r.percent ?? 0),
+        ect: r.ect || '',
+        sentwage: r.sentwage || '',
+        ownercase: r.ownercase || '',
+        createdAt: r.createdAt || (r.notedate ? new Date(r.notedate).toISOString() : new Date().toISOString())
+      }));
+      setLocal('tblsentwage', normalized);
+      return normalized;
+    }
+    if (error) {
+      console.error('Supabase getSentwages error:', error.message);
+    }
+  } catch (error) {
+    console.error('Supabase fallback getSentwages:', error);
+  }
+  const localList = getLocal<SentwageRecord>('tblsentwage', INITIAL_SENTWAGES);
+  return localList.map(r => ({
+    ...r,
+    hn: r.hn || '',
+    asa: (r.asa || '1') as AsaLevel
+  }));
+};
+
+export const getNextIdWage = async (): Promise<string> => {
+  try {
+    const items = await getSentwages();
+    let maxNum = 0;
+    for (const item of items) {
+      if (item.idwage) {
+        const match = item.idwage.match(/w-(\d+)/i);
+        if (match && match[1]) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxNum) {
+            maxNum = num;
+          }
+        }
+      }
+    }
+    const nextNum = maxNum + 1;
+    return `w-${String(nextNum).padStart(5, '0')}`;
+  } catch {
+    return 'w-00001';
+  }
+};
+
+export const addSentwage = async (record: Omit<SentwageRecord, 'id'>): Promise<SentwageRecord> => {
+  const finalIdWage = record.idwage && record.idwage.trim().length > 0
+    ? record.idwage
+    : await getNextIdWage();
+
+  // Convert Buddhist Era DD/MM/YYYY to ISO YYYY-MM-DD for PostgreSQL DATE column
+  const isoDate = record.notedate && record.notedate.includes('/')
+    ? convertBEDateToIso(record.notedate)
+    : record.notedate;
+
+  // Build Supabase payload - user table uses "HN" and "ASA" (uppercase) and idwage as key
+  const payload: Record<string, any> = {
+    idwage: finalIdWage,
+    notedate: isoDate,
+    HN: record.hn || '',
+    ASA: String(record.asa || '1'),
+    s1: record.s1 || 'ปฏิบัติครบ',
+    s2: record.s2 || 'ปฏิบัติครบ',
+    s3: record.s3 || 'ปฏิบัติครบ',
+    s4: record.s4 || 'ปฏิบัติครบ',
+    s5: record.s5 || 'ปฏิบัติครบ',
+    b1: record.b1 || 'ปฏิบัติครบ',
+    b2: record.b2 || 'ปฏิบัติครบ',
+    b3: record.b3 || 'ปฏิบัติครบ',
+    b4: record.b4 || 'ปฏิบัติครบ',
+    b5: record.b5 || 'ปฏิบัติครบ',
+    b6: record.b6 || 'ปฏิบัติครบ',
+    b7: record.b7 || 'ปฏิบัติครบ',
+    a1: record.a1 || 'ปฏิบัติครบ',
+    a2: record.a2 || 'ปฏิบัติครบ',
+    a3: record.a3 || 'ปฏิบัติครบ',
+    a4: record.a4 || 'ปฏิบัติครบ',
+    a5: record.a5 || 'ปฏิบัติครบ',
+    a6: record.a6 || 'ปฏิบัติครบ',
+    a7: record.a7 || 'ปฏิบัติครบ',
+    r1: record.r1 || 'ปฏิบัติครบ',
+    r2: record.r2 || 'ปฏิบัติครบ',
+    r3: record.r3 || 'ปฏิบัติครบ',
+    r4: record.r4 || 'ปฏิบัติครบ',
+    r5: record.r5 || 'ปฏิบัติครบ',
+    r6: record.r6 || 'ปฏิบัติครบ',
+    point: Number(record.point ?? 0),
+    percent: Number(record.percent ?? 0),
+    ect: record.ect || '',
+    sentwage: record.sentwage || '',
+    ownercase: record.ownercase || ''
+  };
+
+  let { data, error } = await supabase
+    .from('tblsentwage')
+    .insert([payload])
+    .select('*')
+    .single();
+
+  // If column error with uppercase HN/ASA, fallback to lowercase hn/asa
+  if (error && (error.code === 'PGRST204' || error.message?.includes('HN') || error.message?.includes('ASA'))) {
+    const fallbackPayload: Record<string, any> = { ...payload, hn: payload.HN, asa: payload.ASA };
+    delete fallbackPayload.HN;
+    delete fallbackPayload.ASA;
+    const retry = await supabase
+      .from('tblsentwage')
+      .insert([fallbackPayload])
+      .select('*')
+      .single();
+    if (!retry.error && retry.data) {
+      data = retry.data;
+      error = null;
+    }
+  }
+
+  // If Supabase failed to insert, throw descriptive error so UI notifies the user immediately!
+  if (error || !data) {
+    const errText = error ? `${error.message}${error.hint ? ' (' + error.hint + ')' : ''}` : 'ไม่พบข้อมูลตอบกลับจากเซิร์ฟเวอร์';
+    console.error('Supabase addSentwage error:', error);
+    throw new Error(`ไม่สามารถบันทึกลงตาราง tblsentwage ได้: ${errText}`);
+  }
+
+  const created: SentwageRecord = {
+    id: data.id || data.idwage,
+    idwage: data.idwage,
+    notedate: record.notedate,
+    hn: data.HN ?? data.hn ?? record.hn,
+    asa: (data.ASA ?? data.asa ?? record.asa) as AsaLevel,
+    s1: data.s1,
+    s2: data.s2,
+    s3: data.s3,
+    s4: data.s4,
+    s5: data.s5,
+    b1: data.b1,
+    b2: data.b2,
+    b3: data.b3,
+    b4: data.b4,
+    b5: data.b5,
+    b6: data.b6,
+    b7: data.b7,
+    a1: data.a1,
+    a2: data.a2,
+    a3: data.a3,
+    a4: data.a4,
+    a5: data.a5,
+    a6: data.a6,
+    a7: data.a7,
+    r1: data.r1,
+    r2: data.r2,
+    r3: data.r3,
+    r4: data.r4,
+    r5: data.r5,
+    r6: data.r6,
+    point: Number(data.point ?? record.point),
+    percent: Number(data.percent ?? record.percent),
+    ect: data.ect ?? record.ect,
+    sentwage: data.sentwage ?? record.sentwage,
+    ownercase: data.ownercase ?? record.ownercase
+  };
+
+  const cached = getLocal<SentwageRecord>('tblsentwage', []);
+  setLocal('tblsentwage', [created, ...cached.filter(x => x.idwage !== created.idwage)]);
+  return created;
+};
+
+export const updateSentwage = async (idOrIdwage: string, updates: Partial<SentwageRecord>): Promise<void> => {
+  const targetIdwage = updates.idwage || idOrIdwage;
+
+  // Convert BE date to ISO format if present
+  const isoDate = updates.notedate && updates.notedate.includes('/')
+    ? convertBEDateToIso(updates.notedate)
+    : updates.notedate;
+
+  const payload: Record<string, any> = {};
+  if (updates.idwage !== undefined) payload.idwage = updates.idwage;
+  if (isoDate !== undefined) payload.notedate = isoDate;
+  if (updates.hn !== undefined) payload.HN = updates.hn;
+  if (updates.asa !== undefined) payload.ASA = String(updates.asa);
+
+  const keys: (keyof SentwageRecord)[] = [
+    's1', 's2', 's3', 's4', 's5',
+    'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7',
+    'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7',
+    'r1', 'r2', 'r3', 'r4', 'r5', 'r6'
+  ];
+  for (const k of keys) {
+    if (updates[k] !== undefined) {
+      payload[k] = updates[k];
+    }
+  }
+
+  if (updates.point !== undefined) payload.point = Number(updates.point);
+  if (updates.percent !== undefined) payload.percent = Number(updates.percent);
+  if (updates.ect !== undefined) payload.ect = updates.ect;
+  if (updates.sentwage !== undefined) payload.sentwage = updates.sentwage;
+  if (updates.ownercase !== undefined) payload.ownercase = updates.ownercase;
+
+  let { error } = await supabase
+    .from('tblsentwage')
+    .update(payload)
+    .eq('idwage', targetIdwage);
+
+  if (error && (error.code === 'PGRST204' || error.message?.includes('HN') || error.message?.includes('ASA'))) {
+    const fallbackPayload = { ...payload };
+    if (fallbackPayload.HN !== undefined) {
+      fallbackPayload.hn = fallbackPayload.HN;
+      delete fallbackPayload.HN;
+    }
+    if (fallbackPayload.ASA !== undefined) {
+      fallbackPayload.asa = fallbackPayload.ASA;
+      delete fallbackPayload.ASA;
+    }
+    const retry = await supabase
+      .from('tblsentwage')
+      .update(fallbackPayload)
+      .eq('idwage', targetIdwage);
+    error = retry.error;
+  }
+
+  if (error) {
+    console.error('Supabase updateSentwage error:', error);
+    throw new Error(`ไม่สามารถอัปเดตข้อมูลลงตาราง tblsentwage ได้: ${error.message || error.details || 'รหัส ' + error.code}`);
+  }
+
+  const items = getLocal<SentwageRecord>('tblsentwage', []);
+  setLocal('tblsentwage', items.map(x => (x.idwage === targetIdwage || x.id === idOrIdwage) ? { ...x, ...updates } : x));
+};
+
+export const deleteSentwage = async (idOrIdwage: string): Promise<void> => {
+  const { error } = await supabase
+    .from('tblsentwage')
+    .delete()
+    .eq('idwage', idOrIdwage);
+
+  if (error) {
+    console.error('Supabase deleteSentwage error:', error);
+    throw new Error(`ไม่สามารถลบข้อมูลจากตาราง tblsentwage ได้: ${error.message || error.details || 'รหัส ' + error.code}`);
+  }
+
+  const items = getLocal<SentwageRecord>('tblsentwage', []);
+  setLocal('tblsentwage', items.filter(x => x.idwage !== idOrIdwage && x.id !== idOrIdwage));
 };

@@ -11,7 +11,8 @@ import {
   Activity,
   Shield,
   Layers,
-  ChevronRight
+  ChevronRight,
+  ClipboardCheck
 } from 'lucide-react';
 
 export type ActiveTab =
@@ -19,6 +20,7 @@ export type ActiveTab =
   | 'service_disease'
   | 'service_complication'
   | 'service_drug'
+  | 'service_sentwage'
   | 'master_disease'
   | 'master_complication'
   | 'master_drug'
@@ -26,7 +28,8 @@ export type ActiveTab =
   | 'dashboard_patient'
   | 'dashboard_disease'
   | 'dashboard_complication'
-  | 'dashboard_drug';
+  | 'dashboard_drug'
+  | 'dashboard_sentwage';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -77,6 +80,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: 'บันทึกยา',
           desc: 'บันทึกรายการยาที่ใช้ในวิสัญญี',
           icon: Pill
+        },
+        {
+          id: 'service_sentwage' as ActiveTab,
+          label: 'ติดตามการส่งเวร',
+          desc: 'บันทึกและประเมินคุณภาพการส่งเวร (SBAR)',
+          icon: ClipboardCheck,
+          badge: 'SBAR'
         }
       ]
     },
@@ -136,6 +146,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           label: 'รายงานยา',
           desc: 'สรุปการใช้ยาและห้องบริการ',
           icon: PieChart
+        },
+        {
+          id: 'dashboard_sentwage' as ActiveTab,
+          label: 'รายงานส่งเวร',
+          desc: 'สรุปผลข้อมูล ความถี่ จำนวน และร้อยละ',
+          icon: FileCheck2,
+          badge: 'NEW'
         }
       ]
     }
