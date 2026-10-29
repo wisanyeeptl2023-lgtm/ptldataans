@@ -181,7 +181,7 @@ export const UserManagementView: React.FC = () => {
         </div>
         <h3 className="text-lg font-bold text-slate-800">เข้าสู่เมนูผู้ใช้งาน</h3>
         <p className="text-xs text-slate-500 mt-1 mb-6">
-          เมนูนี้ได้รับการคุ้มครอง กรุณากรอกรหัสผ่านผู้ดูแลระบบ (รหัสผ่าน: <code className="font-mono font-bold text-emerald-700">ptlans</code>)
+          เมนูนี้ได้รับการคุ้มครอง กรุณากรอกรหัสผ่านผู้ดูแลระบบเพื่อเข้าใช้งาน
         </p>
 
         <form onSubmit={handleVerifyPin} className="space-y-4 text-left">
@@ -199,7 +199,7 @@ export const UserManagementView: React.FC = () => {
                   setPinInput(e.target.value);
                   setPinError('');
                 }}
-                placeholder="กรอกรหัสผ่าน เช่น ptlans"
+                placeholder="กรอกรหัสผ่านผู้ดูแลระบบ"
                 required
                 className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-emerald-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white text-slate-800"
               />

@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           id: 'master_users' as ActiveTab,
           label: 'เมนูผู้ใช้งาน',
-          desc: 'จัดการสิทธิ์ผู้ใช้ (รหัสผ่าน: ptlans)',
+          desc: 'จัดการสิทธิ์ผู้ใช้งานระบบ',
           icon: Shield,
           badge: 'PIN'
         }
